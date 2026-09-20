@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TYPINGTEST - Pro Typer</title>
+  
+  <title>TypingVerse</title>
+  <meta name="description" content="Typing test with touch typing keyboard guide and multimedia global chat.">
+  <meta name="keywords" content="touch typing, global chat, image upload, video upload, typingverse">
+
+  <link rel="icon" type="image/svg+xml" href="https://api.dicebear.com/7.x/bottts/svg?seed=TypingVerse">
+
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Kantumruuy+Pro:wght@400;600;700&display=swap" rel="stylesheet">
   
   
@@ -26,30 +32,30 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kantumruuy Pro', sans-serif; }
     body { background-color: var(--bg); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
 
-    
+   
     .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 30px; background: #0f1222; border-bottom: 1px solid #1e2238; }
     .logo { font-size: 1.4rem; font-weight: bold; color: white; display: flex; align-items: center; gap: 8px; }
     .logo span { background: linear-gradient(to right, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     
     .nav-right { display: flex; align-items: center; gap: 20px; }
-    .nav-links { display: flex; gap: 20px; font-weight: 600; font-size: 0.9rem; }
+    .nav-links { display: flex; gap: 15px; font-weight: 600; font-size: 0.9rem; }
     .nav-links a { color: var(--text-muted); text-decoration: none; transition: 0.2s; cursor: pointer; padding: 5px 10px; border-radius: 6px; }
     .nav-links a.active, .nav-links a:hover { color: #fff; background: rgba(139, 92, 246, 0.2); text-shadow: 0 0 8px rgba(255,255,255,0.5); }
 
     .lang-select { background: #1a1e33; color: var(--neon-cyan); border: 1px solid var(--neon-cyan); padding: 5px 10px; border-radius: 6px; font-weight: bold; outline: none; cursor: pointer; }
 
-   
-    .app-container { display: grid; grid-template-columns: 1fr 360px; gap: 20px; padding: 20px; flex: 1; }
+ 
+    .app-container { display: grid; grid-template-columns: 1fr 380px; gap: 20px; padding: 20px; flex: 1; }
 
-   
+    
     .tab-content { display: none; }
     .tab-content.active { display: flex; flex-direction: column; gap: 15px; }
 
-   
+    
     .stats-bar { display: flex; justify-content: space-around; align-items: center; background: rgba(139, 92, 246, 0.1); border: 1px solid var(--border-purple); padding: 12px 20px; border-radius: 12px; font-size: 1rem; }
     .stats-bar div { font-weight: bold; display: flex; gap: 8px; align-items: center; }
 
-    
+   
     .typing-card {
       background: var(--card-bg);
       border: 2px solid var(--border-purple);
@@ -98,85 +104,63 @@
       text-align: center;
     }
 
-    
-    .restart-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 5px 0;
-    }
+    .restart-container { display: flex; justify-content: center; align-items: center; margin: 5px 0; }
     .btn-restart-bottom {
-      background: var(--neon-cyan);
-      color: #000;
-      border: none;
-      padding: 8px 25px;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 0.95rem;
-      cursor: pointer;
-      box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
-      transition: 0.2s;
+      background: var(--neon-cyan); color: #000; border: none; padding: 8px 25px; border-radius: 8px;
+      font-weight: bold; font-size: 0.95rem; cursor: pointer; box-shadow: 0 0 10px rgba(6, 182, 212, 0.3); transition: 0.2s;
     }
     .btn-restart-bottom:hover { opacity: 0.9; transform: scale(1.05); }
 
-   
+    
     .keyboard-container {
-      background: var(--card-bg);
-      border: 1px solid #232740;
-      border-radius: 12px;
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
+      background: var(--card-bg); border: 1px solid #232740; border-radius: 12px; padding: 15px;
+      display: flex; flex-direction: column; gap: 6px; position: relative;
     }
     .kb-row { display: flex; justify-content: center; gap: 5px; }
     .key {
-      background: #1a1e33;
-      border: 1px solid #2e3454;
-      color: var(--text-muted);
-      border-radius: 6px;
-      padding: 10px 0;
-      width: 44px;
-      text-align: center;
-      font-size: 0.8rem;
-      font-family: 'Fira Code', monospace;
-      box-shadow: 0 3px 0 #0f111e;
-      transition: all 0.08s ease;
+      background: #1a1e33; border: 1px solid #2e3454; color: var(--text-muted); border-radius: 6px;
+      padding: 10px 0; width: 44px; text-align: center; font-size: 0.8rem; font-family: 'Fira Code', monospace;
+      box-shadow: 0 3px 0 #0f111e; transition: all 0.08s ease; position: relative;
     }
-    .key.active { background: var(--neon-cyan); color: #000; font-weight: bold; box-shadow: 0 0 12px var(--neon-cyan); transform: translateY(2px); }
-    .key.space { width: 280px; }
+    
+    .key.pinky-l { background: rgba(249, 115, 22, 0.3); border-color: #f97316; color: #fed7aa; }
+    .key.ring-l { background: rgba(234, 179, 8, 0.3); border-color: #eab308; color: #fef08a; }
+    .key.middle-l { background: rgba(34, 197, 94, 0.3); border-color: #22c55e; color: #bbf7d0; }
+    .key.index-l { background: rgba(6, 182, 212, 0.3); border-color: #06b6d4; color: #a5f3fc; }
+    .key.index-r { background: rgba(59, 130, 246, 0.3); border-color: #3b82f6; color: #bfdbfe; }
+    .key.middle-r { background: rgba(168, 85, 247, 0.3); border-color: #a855f7; color: #e9d5ff; }
+    .key.ring-r { background: rgba(236, 72, 153, 0.3); border-color: #ec4899; color: #fbcfe8; }
+    .key.pinky-r { background: rgba(239, 68, 68, 0.3); border-color: #ef4444; color: #fecaca; }
+
+    .key.active { background: #fff !important; color: #000 !important; font-weight: bold; box-shadow: 0 0 15px #fff; transform: translateY(2px); }
+    .key.space { width: 280px; background: rgba(255,255,255,0.1); }
     .key.wide { flex-grow: 1; }
 
-    
+   
+    .hands-guide-container {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #0f1222; border: 1px solid #2e3454; border-radius: 10px; padding: 15px; margin-top: 10px;
+    }
+    .hand-box { display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 0.85rem; color: var(--text-muted); }
+    .hand-visual { font-size: 2.2rem; filter: drop-shadow(0 0 6px rgba(139,92,246,0.4)); transition: 0.1s; }
+    .hand-visual.active-strike { transform: scale(1.15); filter: drop-shadow(0 0 12px var(--neon-cyan)); }
+
+   
     .profile-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-purple);
-      border-radius: 12px;
-      padding: 25px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
+      background: var(--card-bg); border: 1px solid var(--border-purple); border-radius: 12px;
+      padding: 25px; display: flex; flex-direction: column; align-items: center; gap: 15px;
     }
     .avatar-wrapper { position: relative; width: 110px; height: 110px; }
     .profile-avatar { width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--neon-cyan); object-fit: cover; box-shadow: 0 0 15px var(--neon-cyan); }
     .upload-btn {
-      position: absolute; bottom: 0; right: 0;
-      background: var(--neon-pink); color: white;
-      border: none; padding: 6px; border-radius: 50%;
-      cursor: pointer; font-size: 0.8rem; line-height: 1;
+      position: absolute; bottom: 0; right: 0; background: var(--neon-pink); color: white;
+      border: none; padding: 6px; border-radius: 50%; cursor: pointer; font-size: 0.8rem; line-height: 1;
     }
 
-   
+    
     .right-section {
-      background: var(--card-bg);
-      border: 1px solid var(--neon-cyan);
-      box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
-      border-radius: 12px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      max-height: 650px;
+      background: var(--card-bg); border: 1px solid var(--neon-cyan); box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
+      border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; height: 680px;
     }
     .chat-header { background: rgba(6, 182, 212, 0.1); border-bottom: 1px solid #1e293b; padding: 12px 15px; font-weight: bold; display: flex; justify-content: space-between; font-size: 0.9rem; }
     .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; font-size: 0.85rem; }
@@ -188,40 +172,37 @@
     .msg-content .reply-box { background: rgba(139, 92, 246, 0.15); border-left: 3px solid var(--border-purple); padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; margin-bottom: 4px; color: var(--text-muted); }
     .msg-content .text { background: #1c2238; padding: 8px 12px; border-radius: 8px; margin-top: 3px; line-height: 1.4; word-break: break-word; position: relative; display: inline-block; width: 100%; }
     
-    .msg-actions { display: flex; gap: 10px; font-size: 0.7rem; color: var(--text-muted); margin-top: 3px; }
+    .msg-media { max-width: 100%; border-radius: 8px; margin-top: 6px; max-height: 200px; display: block; object-fit: cover; }
+    .msg-video { max-width: 100%; border-radius: 8px; margin-top: 6px; max-height: 200px; display: block; }
+
+    .msg-actions { display: flex; gap: 10px; font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; }
     .msg-actions span { cursor: pointer; transition: 0.2s; }
     .msg-actions span:hover { color: var(--neon-cyan); }
 
     #reply-preview { display: none; background: #1a1e33; padding: 6px 12px; font-size: 0.75rem; border-left: 3px solid var(--neon-pink); justify-content: space-between; align-items: center; }
 
     .chat-input-area { padding: 10px; border-top: 1px solid #1e293b; display: flex; flex-direction: column; gap: 6px; background: #0f1222; }
-    .chat-input-row { display: flex; gap: 8px; }
+    .chat-input-row { display: flex; gap: 8px; align-items: center; }
     .chat-input-row input { flex: 1; background: #181c2e; border: 1px solid #2e3454; border-radius: 6px; padding: 8px 12px; color: #fff; font-size: 0.85rem; outline: none; }
-    .chat-input-row button { background: var(--border-purple); color: #fff; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
+    .chat-input-row button { background: var(--border-purple); color: #fff; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
+    .media-btn { background: #1a1e33; border: 1px solid #2e3454; color: var(--neon-cyan); padding: 7px 10px; border-radius: 6px; cursor: pointer; font-size: 1rem; transition: 0.2s; }
+    .media-btn:hover { background: rgba(6, 182, 212, 0.2); }
 
-    .emoji-picker { display: flex; gap: 6px; padding: 4px 0; font-size: 1.1rem; cursor: pointer; }
+    .emoji-picker { display: flex; gap: 6px; padding: 2px 0; font-size: 1.1rem; cursor: pointer; }
     .emoji-picker span:hover { transform: scale(1.2); }
 
-    .online-list { border-top: 1px solid #1e293b; padding: 10px 15px; display: flex; flex-direction: column; gap: 8px; height: 100px; overflow-y: auto; background: rgba(0,0,0,0.2); }
+    .online-list { border-top: 1px solid #1e293b; padding: 10px 15px; display: flex; flex-direction: column; gap: 8px; height: 90px; overflow-y: auto; background: rgba(0,0,0,0.2); }
     .online-user { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
     .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 6px #22c55e; }
 
     
     #result-modal {
-      display: none;
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(11, 13, 25, 0.95);
-      z-index: 1000;
-      justify-content: center; align-items: center;
-      padding: 20px;
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(11, 13, 25, 0.95); z-index: 1000; justify-content: center; align-items: center; padding: 20px;
     }
     .result-card {
-      background: var(--card-bg);
-      border: 2px solid var(--border-purple);
-      border-radius: 16px;
-      width: 100%; max-width: 700px;
-      padding: 30px;
-      display: flex; flex-direction: column; gap: 20px;
+      background: var(--card-bg); border: 2px solid var(--border-purple); border-radius: 16px;
+      width: 100%; max-width: 700px; padding: 30px; display: flex; flex-direction: column; gap: 20px;
       box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
     }
     .result-header-stats { display: flex; justify-content: space-around; }
@@ -229,9 +210,7 @@
     .stat-box .label { font-size: 0.9rem; color: var(--text-muted); }
     .stat-box .value { font-size: 2.5rem; font-weight: bold; margin-top: 5px; }
     
-    .chart-container {
-      background: rgba(0,0,0,0.4); border: 1px solid #1e2538; border-radius: 10px; padding: 15px; height: 180px; position: relative;
-    }
+    .chart-container { background: rgba(0,0,0,0.4); border: 1px solid #1e2538; border-radius: 10px; padding: 15px; height: 180px; position: relative; }
     canvas { width: 100% !important; height: 100% !important; }
     
     .result-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
@@ -253,7 +232,7 @@
         <a onclick="switchTab('friends')" id="nav-friends">FRIENDS</a>
       </div>
 
-      
+   
       <select class="lang-select" id="lang-select" onchange="changeLanguage(this.value)">
         <option value="km">ខ្មែរ (Khmer)</option>
         <option value="en">English</option>
@@ -263,13 +242,13 @@
     </div>
   </div>
 
-
+ 
   <div class="app-container">
     
-   
+ 
     <div class="left-section">
       
-    
+     
       <div id="tab-home" class="tab-content active">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h2 style="font-size: 1.2rem;" id="txt-title">Typing Test</h2>
@@ -286,29 +265,46 @@
           <input type="text" class="typing-input-field" id="typing-input" placeholder="Mulai ketik di sini..." autocomplete="off">
         </div>
 
-        
         <div class="restart-container">
           <button class="btn-restart-bottom" onclick="resetTest()" id="btn-restart">🔄 Mulai Ulang</button>
         </div>
 
-        <h3 style="font-size: 0.9rem; color: var(--text-muted);" id="txt-kb-title">Keyboard Layout</h3>
+        <h3 style="font-size: 0.9rem; color: var(--text-muted);" id="txt-kb-title">Touch Typing Keyboard & Hand Guides</h3>
+        
+     
         <div class="keyboard-container">
           <div class="kb-row">
-            <div class="key" data-key="escape">Esc</div><div class="key" data-key="1">1</div><div class="key" data-key="2">2</div><div class="key" data-key="3">3</div><div class="key" data-key="4">4</div><div class="key" data-key="5">5</div><div class="key" data-key="6">6</div><div class="key" data-key="7">7</div><div class="key" data-key="8">8</div><div class="key" data-key="9">9</div><div class="key" data-key="0">0</div><div class="key" data-key="-">-</div><div class="key" data-key="=">=</div><div class="key wide" data-key="backspace">←</div>
+            <div class="key pinky-l" data-key="escape">Esc</div><div class="key pinky-l" data-key="1">1</div><div class="key ring-l" data-key="2">2</div><div class="key middle-l" data-key="3">3</div><div class="key index-l" data-key="4">4</div><div class="key index-l" data-key="5">5</div><div class="key index-r" data-key="6">6</div><div class="key index-r" data-key="7">7</div><div class="key middle-r" data-key="8">8</div><div class="key ring-r" data-key="9">9</div><div class="key pinky-r" data-key="0">0</div><div class="key pinky-r" data-key="-">-</div><div class="key pinky-r" data-key="=">=</div><div class="key wide pinky-r" data-key="backspace">←</div>
           </div>
           <div class="kb-row">
-            <div class="key wide" data-key="tab">Tab</div><div class="key" data-key="q">Q</div><div class="key" data-key="w">W</div><div class="key" data-key="e">E</div><div class="key" data-key="r">R</div><div class="key" data-key="t">T</div><div class="key" data-key="y">Y</div><div class="key" data-key="u">U</div><div class="key" data-key="i">I</div><div class="key" data-key="o">O</div><div class="key" data-key="p">P</div><div class="key" data-key="[">[</div><div class="key" data-key="]">]</div><div class="key" data-key="\">\</div>
+            <div class="key wide pinky-l" data-key="tab">Tab</div><div class="key pinky-l" data-key="q">Q</div><div class="key ring-l" data-key="w">W</div><div class="key middle-l" data-key="e">E</div><div class="key index-l" data-key="r">R</div><div class="key index-l" data-key="t">T</div><div class="key index-r" data-key="y">Y</div><div class="key index-r" data-key="u">U</div><div class="key middle-r" data-key="i">I</div><div class="key ring-r" data-key="o">O</div><div class="key pinky-r" data-key="p">P</div><div class="key pinky-r" data-key="[">[</div><div class="key pinky-r" data-key="]">]</div><div class="key pinky-r" data-key="\">\</div>
           </div>
           <div class="kb-row">
-            <div class="key wide" data-key="capslock">Caps</div><div class="key" data-key="a">A</div><div class="key" data-key="s">S</div><div class="key" data-key="d">D</div><div class="key" data-key="f">F</div><div class="key" data-key="g">G</div><div class="key" data-key="h">H</div><div class="key" data-key="j">J</div><div class="key" data-key="k">K</div><div class="key" data-key="l">L</div><div class="key" data-key=";">;</div><div class="key" data-key="'">'</div><div class="key wide" data-key="enter">Enter</div>
+            <div class="key wide pinky-l" data-key="capslock">Caps</div><div class="key pinky-l" data-key="a">A</div><div class="key ring-l" data-key="s">S</div><div class="key middle-l" data-key="d">D</div><div class="key index-l" data-key="f">F</div><div class="key index-l" data-key="g">G</div><div class="key index-r" data-key="h">H</div><div class="key index-r" data-key="j">J</div><div class="key middle-r" data-key="k">K</div><div class="key ring-r" data-key="l">L</div><div class="key pinky-r" data-key=";">;</div><div class="key pinky-r" data-key="'">'</div><div class="key wide pinky-r" data-key="enter">Enter</div>
           </div>
           <div class="kb-row">
-            <div class="key wide" data-key="shift">Shift</div><div class="key" data-key="z">Z</div><div class="key" data-key="x">X</div><div class="key" data-key="c">C</div><div class="key" data-key="v">V</div><div class="key" data-key="b">B</div><div class="key" data-key="n">N</div><div class="key" data-key="m">M</div><div class="key" data-key=",">,</div><div class="key" data-key=".">.</div><div class="key" data-key="/">/</div><div class="key wide" data-key="shift">Shift</div>
+            <div class="key wide pinky-l" data-key="shift">Shift</div><div class="key pinky-l" data-key="z">Z</div><div class="key ring-l" data-key="x">X</div><div class="key middle-l" data-key="c">C</div><div class="key index-l" data-key="v">V</div><div class="key index-l" data-key="b">B</div><div class="key index-r" data-key="n">N</div><div class="key index-r" data-key="m">M</div><div class="key middle-r" data-key=",">,</div><div class="key ring-r" data-key=".">.</div><div class="key pinky-r" data-key="/">/</div><div class="key wide pinky-r" data-key="shift">Shift</div>
           </div>
           <div class="kb-row">
-            <div class="key space" data-key=" ">Space</div>
+            <div class="key space" data-key=" ">Space (Thumb)</div>
           </div>
         </div>
+
+       
+        <div class="hands-guide-container">
+          <div class="hand-box">
+            <div class="hand-visual" id="left-hand-icon">🤲</div>
+            <span>ខាងឆ្វេង (Left Hand)</span>
+          </div>
+          <div style="text-align:center; font-size:0.8rem; color:var(--text-muted);">
+            💡 ពណ៌នៅលើគ្រាប់ចុចបង្ហាញពីម្រាមដៃដែលត្រូវវាយ<br>(Orange: ម្រាមកូនតូច | Yellow: ម្រាមនាង | Green: ម្រាមកណ្តាល | Cyan: ម្រាមចង្អុល)
+          </div>
+          <div class="hand-box">
+            <div class="hand-visual" id="right-hand-icon">🤲</div>
+            <span>ខាងស្តាំ (Right Hand)</span>
+          </div>
+        </div>
+
       </div>
 
      
@@ -324,7 +320,7 @@
         </div>
       </div>
 
-    
+     
       <div id="tab-profile" class="tab-content">
         <h2>👤 User Profile</h2>
         <div class="profile-card">
@@ -345,7 +341,7 @@
         </div>
       </div>
 
-      
+     
       <div id="tab-friends" class="tab-content">
         <h2>👥 Friends List (Online Now)</h2>
         <div class="typing-card" id="friends-tab-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
@@ -353,16 +349,15 @@
 
     </div>
 
-   
+  
     <div class="right-section">
       <div class="chat-header">
-        <span>🌐 GLOBAL CHAT</span>
+        <span>🌐 GLOBAL CHAT (Multimedia)</span>
         <span style="color:var(--text-muted);">👥 <span id="online-count">0</span></span>
       </div>
 
       <div class="chat-messages" id="chat-box"></div>
 
-     
       <div id="reply-preview">
         <span id="reply-preview-text">Replying to...</span>
         <span onclick="cancelReply()" style="cursor:pointer; color:var(--text-red); font-weight:bold;">✖</span>
@@ -381,6 +376,10 @@
         </div>
         
         <div class="chat-input-row">
+        
+          <input type="file" id="chat-media-input" accept="image/*,video/*" style="display:none" onchange="sendMediaMessage(event)">
+          <button class="media-btn" onclick="document.getElementById('chat-media-input').click()" title="ផ្ញើរូបភាព ឬវីដេអូ">📷</button>
+          
           <input type="text" id="chat-input" placeholder="វាយសារនៅទីនេះ..." onkeydown="if(event.key==='Enter') sendMsg()">
           <button onclick="sendMsg()">SEND</button>
         </div>
@@ -422,7 +421,7 @@
   </div>
 
   <script>
-   
+    
     const firebaseConfig = {
       apiKey: "AIzaSyDJjhTRG-wdtzbMcwxVu8IQNA3fUsxJJPs",
       authDomain: "postvfb-59d24.firebaseapp.com",
@@ -443,10 +442,10 @@
     const dataKhmer = ["សួស្តី", "កម្ពុជា", "សន្តិភាព", "រស្មី", "វាយអត្ថបទ", "រៀន", "ចំណេះដឹង", "បច្ចេកវិទ្យា", "អនាគត", "ជោគជ័យ", "ស្រលាញ់", "សាលារៀន", "គ្រូ", "សិស្ស", "មិត្តភក្តិ", "សប្បាយ", "រីករាយ", "ម្ហូប", "អង្គរវត្ត", "ខ្មែរ", "វប្បធម៌", "អរិយធម៌", "ប្រវត្តិសាស្ត្រ", "ការងារ", "ព្យាយាម", "អត់ធ្មត់", "គោលដៅ", "សុបិន", "កម្លាំង", "ចិត្ត", "ជឿជាក់", "អរគុណ", "សុំទោស", "សូមជម្រាបសួរ", "មេឃ", "ដី", "ទឹក", "ភ្លើង", "ខ្យល់", "ដើមឈើ", "ផ្កា", "សត្វ", "ភ្នំ", "សមុទ្រ", "កោះ", "ទន្លេ", "ផ្លូវ", "ផ្ទះ", "គ្រួសារ", "បងប្អូន", "ឪពុក", "ម្តាយ", "កូន", "ចៅ", "លោកតា", "លោកយាយ", "ក្នុង", "ជាតិ", "នេះ", "គ្មាន", "ចង់", "បាន", "អ្វី", "ឡើយ", "ត្រឹម", "ចិត្ត", "ស្នេហ៍", "អូន", "មក", "បង", "ទោះ", "មិន", "ល្អ", "គ្រប់", "យ៉ាង", "តែជាសំណាងបង","មានអូន", "ក្នុងបេះដូង", "គ្រប់គ្រាន់ហើយ"];
 
     const navTranslations = {
-      km: { home: "ទំព័រដើម", leaderboard: "ចំណាត់ថ្នាក់", profile: "ប្រវត្តិរូប", friends: "មិត្តភក្តិ", placeholder: "ចុចវាយនៅទីនេះ ដើម្បីចាប់ផ្តើម...", kb: "ក្ដារចុច Virtual", restart: "🔄 ចាប់ផ្តើមម្ដងទៀត", time: "⏳ ពេល", wpm: "🚀 WPM", err: "❌ ខុស" },
-      en: { home: "HOME", leaderboard: "LEADERBOARD", profile: "PROFILE", friends: "FRIENDS", placeholder: "Click here to start typing...", kb: "Keyboard Layout", restart: "🔄 Restart", time: "⏳ Time", wpm: "🚀 WPM", err: "❌ Error" },
-      latin: { home: "TOMPOR DERM", leaderboard: "CHAMNAT THNAK", profile: "PRAVATI ROUP", friends: "MITTAK PHEAK", placeholder: "Chuch vay ney thene...", kb: "Kdar Chuch Virtual", restart: "🔄 Restart", time: "⏳ Pel", wpm: "🚀 WPM", err: "❌ Salah" },
-      id: { home: "BERANDA", leaderboard: "PAPAN SKOR", profile: "PROFIL", friends: "TEMAN", placeholder: "Ketik di sini untuk memulai...", kb: "Tata Letak Keyboard", restart: "🔄 Mulai Ulang", time: "⏳ Waktu", wpm: "🚀 WPM", err: "❌ Salah" }
+      km: { home: "ទំព័រដើម", leaderboard: "ចំណាត់ថ្នាក់", profile: "ប្រវត្តិរូប", friends: "មិត្តភក្តិ", placeholder: "ចុចវាយនៅទីនេះ ដើម្បីចាប់ផ្តើម...", kb: "ក្ដារចុច Touch Typing & Hand Guides", restart: "🔄 ចាប់ផ្តើមម្ដងទៀត", time: "⏳ ពេល", wpm: "🚀 WPM", err: "❌ ខុស" },
+      en: { home: "HOME", leaderboard: "LEADERBOARD", profile: "PROFILE", friends: "FRIENDS", placeholder: "Click here to start typing...", kb: "Touch Typing Keyboard & Hand Guides", restart: "🔄 Restart", time: "⏳ Time", wpm: "🚀 WPM", err: "❌ Error" },
+      latin: { home: "TOMPOR DERM", leaderboard: "CHAMNAT THNAK", profile: "PRAVATI ROUP", friends: "MITTAK PHEAK", placeholder: "Chuch vay ney thene...", kb: "Touch Typing & Hand Guides", restart: "🔄 Restart", time: "⏳ Pel", wpm: "🚀 WPM", err: "❌ Salah" },
+      id: { home: "BERANDA", leaderboard: "PAPAN SKOR", profile: "PROFIL", friends: "TEMAN", placeholder: "Ketik di sini untuk memulai...", kb: "Keyboard Touch Typing & Panduan Jari", restart: "🔄 Mulai Ulang", time: "⏳ Waktu", wpm: "🚀 WPM", err: "❌ Salah" }
     };
 
     let currentLang = localStorage.getItem('typing_lang') || 'km';
@@ -479,7 +478,6 @@
 
     changeLanguage(currentLang, false);
 
-    
     const myPresenceRef = db.ref('online_users').push();
     function updateMyPresence() {
       myPresenceRef.set({ name: currentProfileName, avatar: currentUserAvatar });
@@ -514,7 +512,6 @@
       });
     });
 
-    
     db.ref('leaderboard').on('value', (snapshot) => {
       const data = snapshot.val() || {};
       const now = Date.now();
@@ -593,9 +590,8 @@
     initWords();
 
     inputField.addEventListener('keydown', (e) => {
-     
       if (e.key === 'Tab') {
-        e.preventDefault(); 
+        e.preventDefault();
         resetTest();
         return;
       }
@@ -810,7 +806,6 @@
       alert('Profil berhasil disimpan!');
     }
 
-   
     function insertEmoji(emoji) {
       const chatInput = document.getElementById('chat-input');
       chatInput.value += emoji;
@@ -838,12 +833,39 @@
           name: currentProfileName,
           avatar: currentUserAvatar,
           text: text,
+          type: 'text',
           replyTo: replyingTo ? replyingTo : null,
           timestamp: Date.now()
         };
         db.ref('chats').push(messageData);
         chatInput.value = '';
         cancelReply();
+      }
+    }
+
+  
+    function sendMediaMessage(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const fileDataUrl = e.target.result;
+          const isVideo = file.type.startsWith('video');
+
+          const messageData = {
+            name: currentProfileName,
+            avatar: currentUserAvatar,
+            text: isVideo ? '🎥 [Video]' : '📷 [Image]',
+            mediaUrl: fileDataUrl,
+            type: isVideo ? 'video' : 'image',
+            replyTo: replyingTo ? replyingTo : null,
+            timestamp: Date.now()
+          };
+          db.ref('chats').push(messageData);
+          cancelReply();
+          event.target.value = ''; 
+        }
+        reader.readAsDataURL(file);
       }
     }
 
@@ -867,6 +889,13 @@
         replyHtml = `<div class="reply-box">↩️ <b>${escapeHtml(data.replyTo.name)}</b>: ${escapeHtml(data.replyTo.text)}</div>`;
       }
 
+      let mediaHtml = '';
+      if (data.type === 'image' && data.mediaUrl) {
+        mediaHtml = `<img class="msg-media" src="${data.mediaUrl}" alt="Chat Image">`;
+      } else if (data.type === 'video' && data.mediaUrl) {
+        mediaHtml = `<video class="msg-video" controls src="${data.mediaUrl}"></video>`;
+      }
+
       let deleteBtn = '';
       if (data.name === currentProfileName) {
         deleteBtn = `<span onclick="deleteMsg('${msgKey}', '${data.name}')" style="color:var(--text-red);">🗑️ Hapus</span>`;
@@ -881,6 +910,7 @@
           <div class="name">${escapeHtml(data.name)} <span style="color:var(--text-muted); font-weight:normal; font-size:0.7rem;">${timeStr}</span></div>
           ${replyHtml}
           <div class="text">${escapeHtml(data.text)}
+            ${mediaHtml}
             <div class="msg-actions">
               <span onclick="setReply('${msgKey}', '${escapeHtml(data.name)}', '${escapeHtml(data.text)}')">↩️ Balas</span>
               ${deleteBtn}
@@ -903,16 +933,37 @@
       return text.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
 
-    window.addEventListener('keydown', (e) => {
-      let key = e.key.toLowerCase();
-      const keyEl = document.querySelector(`.key[data-key="${key}"]`);
-      if (keyEl) keyEl.classList.add('active');
-    });
+    
+    function triggerHandAction(key) {
+      let targetKey = key.toLowerCase();
+      if (targetKey === ' ') targetKey = ' ';
+      
+      const keyEl = document.querySelector(`.key[data-key="${targetKey}"]`) || document.querySelector(`.key[data-key="${key}"]`);
+      const leftHand = document.getElementById('left-hand-icon');
+      const rightHand = document.getElementById('right-hand-icon');
 
-    window.addEventListener('keyup', (e) => {
-      let key = e.key.toLowerCase();
-      const keyEl = document.querySelector(`.key[data-key="${key}"]`);
-      if (keyEl) keyEl.classList.remove('active');
+      if (keyEl) {
+        document.querySelectorAll('.key').forEach(k => k.classList.remove('active'));
+        keyEl.classList.add('active');
+
+        if (keyEl.classList.contains('pinky-l') || keyEl.classList.contains('ring-l') || keyEl.classList.contains('middle-l') || keyEl.classList.contains('index-l')) {
+          if (leftHand) {
+            leftHand.classList.add('active-strike');
+            setTimeout(() => leftHand.classList.remove('active-strike'), 150);
+          }
+        } else {
+          if (rightHand) {
+            rightHand.classList.add('active-strike');
+            setTimeout(() => rightHand.classList.remove('active-strike'), 150);
+          }
+        }
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      let key = e.key;
+      if (key === ' ') key = ' ';
+      triggerHandAction(key);
     });
   </script>
 </body>
