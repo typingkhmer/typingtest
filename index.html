@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TYPINGTEST</title>
+  <title>TYPINGTEST - Pro Typer</title>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Kantumruuy+Pro:wght@400;600;700&display=swap" rel="stylesheet">
   
-
+  
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
@@ -26,7 +26,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kantumruuy Pro', sans-serif; }
     body { background-color: var(--bg); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* Top Navbar */
+    
     .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 30px; background: #0f1222; border-bottom: 1px solid #1e2238; }
     .logo { font-size: 1.4rem; font-weight: bold; color: white; display: flex; align-items: center; gap: 8px; }
     .logo span { background: linear-gradient(to right, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -38,18 +38,18 @@
 
     .lang-select { background: #1a1e33; color: var(--neon-cyan); border: 1px solid var(--neon-cyan); padding: 5px 10px; border-radius: 6px; font-weight: bold; outline: none; cursor: pointer; }
 
-    /* Main Container Grid Layout */
-    .app-container { display: grid; grid-template-columns: 1fr 340px; gap: 20px; padding: 20px; flex: 1; }
+   
+    .app-container { display: grid; grid-template-columns: 1fr 360px; gap: 20px; padding: 20px; flex: 1; }
 
-    /* Tab Views */
+   
     .tab-content { display: none; }
     .tab-content.active { display: flex; flex-direction: column; gap: 15px; }
 
-    /* Stats Bar */
+   
     .stats-bar { display: flex; justify-content: space-around; align-items: center; background: rgba(139, 92, 246, 0.1); border: 1px solid var(--border-purple); padding: 12px 20px; border-radius: 12px; font-size: 1rem; }
     .stats-bar div { font-weight: bold; display: flex; gap: 8px; align-items: center; }
 
-    /* Typing Card */
+    
     .typing-card {
       background: var(--card-bg);
       border: 2px solid var(--border-purple);
@@ -98,7 +98,28 @@
       text-align: center;
     }
 
-    /* Keyboard Layout */
+    
+    .restart-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 5px 0;
+    }
+    .btn-restart-bottom {
+      background: var(--neon-cyan);
+      color: #000;
+      border: none;
+      padding: 8px 25px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+      transition: 0.2s;
+    }
+    .btn-restart-bottom:hover { opacity: 0.9; transform: scale(1.05); }
+
+   
     .keyboard-container {
       background: var(--card-bg);
       border: 1px solid #232740;
@@ -126,7 +147,7 @@
     .key.space { width: 280px; }
     .key.wide { flex-grow: 1; }
 
-    /* Profile UI Styling */
+    
     .profile-card {
       background: var(--card-bg);
       border: 1px solid var(--border-purple);
@@ -146,7 +167,7 @@
       cursor: pointer; font-size: 0.8rem; line-height: 1;
     }
 
-    /* Right Section: Chat & Community */
+   
     .right-section {
       background: var(--card-bg);
       border: 1px solid var(--neon-cyan);
@@ -155,24 +176,37 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      max-height: 600px;
+      max-height: 650px;
     }
     .chat-header { background: rgba(6, 182, 212, 0.1); border-bottom: 1px solid #1e293b; padding: 12px 15px; font-weight: bold; display: flex; justify-content: space-between; font-size: 0.9rem; }
     .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; font-size: 0.85rem; }
-    .chat-msg { display: flex; gap: 10px; align-items: flex-start; }
+    
+    .chat-msg { display: flex; gap: 10px; align-items: flex-start; position: relative; }
     .chat-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
-    .msg-content .name { font-weight: bold; color: var(--neon-pink); font-size: 0.75rem; }
-    .msg-content .text { background: #1c2238; padding: 8px 12px; border-radius: 8px; margin-top: 3px; line-height: 1.4; word-break: break-word; }
+    .msg-content { flex: 1; }
+    .msg-content .name { font-weight: bold; color: var(--neon-pink); font-size: 0.75rem; display: flex; justify-content: space-between; align-items: center; }
+    .msg-content .reply-box { background: rgba(139, 92, 246, 0.15); border-left: 3px solid var(--border-purple); padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; margin-bottom: 4px; color: var(--text-muted); }
+    .msg-content .text { background: #1c2238; padding: 8px 12px; border-radius: 8px; margin-top: 3px; line-height: 1.4; word-break: break-word; position: relative; display: inline-block; width: 100%; }
+    
+    .msg-actions { display: flex; gap: 10px; font-size: 0.7rem; color: var(--text-muted); margin-top: 3px; }
+    .msg-actions span { cursor: pointer; transition: 0.2s; }
+    .msg-actions span:hover { color: var(--neon-cyan); }
 
-    .chat-input-area { padding: 10px; border-top: 1px solid #1e293b; display: flex; gap: 8px; background: #0f1222; }
-    .chat-input-area input { flex: 1; background: #181c2e; border: 1px solid #2e3454; border-radius: 6px; padding: 8px 12px; color: #fff; font-size: 0.85rem; outline: none; }
-    .chat-input-area button { background: var(--border-purple); color: #fff; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
+    #reply-preview { display: none; background: #1a1e33; padding: 6px 12px; font-size: 0.75rem; border-left: 3px solid var(--neon-pink); justify-content: space-between; align-items: center; }
 
-    .online-list { border-top: 1px solid #1e293b; padding: 10px 15px; display: flex; flex-direction: column; gap: 8px; height: 120px; overflow-y: auto; background: rgba(0,0,0,0.2); }
+    .chat-input-area { padding: 10px; border-top: 1px solid #1e293b; display: flex; flex-direction: column; gap: 6px; background: #0f1222; }
+    .chat-input-row { display: flex; gap: 8px; }
+    .chat-input-row input { flex: 1; background: #181c2e; border: 1px solid #2e3454; border-radius: 6px; padding: 8px 12px; color: #fff; font-size: 0.85rem; outline: none; }
+    .chat-input-row button { background: var(--border-purple); color: #fff; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
+
+    .emoji-picker { display: flex; gap: 6px; padding: 4px 0; font-size: 1.1rem; cursor: pointer; }
+    .emoji-picker span:hover { transform: scale(1.2); }
+
+    .online-list { border-top: 1px solid #1e293b; padding: 10px 15px; display: flex; flex-direction: column; gap: 8px; height: 100px; overflow-y: auto; background: rgba(0,0,0,0.2); }
     .online-user { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
     .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 6px #22c55e; }
 
-    /* Result Modal Styling */
+    
     #result-modal {
       display: none;
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -207,7 +241,7 @@
 </head>
 <body>
 
-  <!-- Top Navigation Bar -->
+ 
   <div class="navbar">
     <div class="logo">⌨️ <span>TypingVerse</span></div>
     
@@ -219,7 +253,7 @@
         <a onclick="switchTab('friends')" id="nav-friends">FRIENDS</a>
       </div>
 
-      <!-- Language Selector -->
+      
       <select class="lang-select" id="lang-select" onchange="changeLanguage(this.value)">
         <option value="km">ខ្មែរ (Khmer)</option>
         <option value="en">English</option>
@@ -229,17 +263,16 @@
     </div>
   </div>
 
-  <!-- Main Container -->
+
   <div class="app-container">
     
-    <!-- Left Section Tab Contents -->
+   
     <div class="left-section">
       
-      <!-- TAB 1: HOME -->
+    
       <div id="tab-home" class="tab-content active">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h2 style="font-size: 1.2rem;" id="txt-title">Typing Test</h2>
-          <button onclick="resetTest()" style="background:var(--neon-cyan); border:none; color:#000; font-weight:bold; padding:6px 15px; border-radius:6px; cursor:pointer;" id="btn-restart">🔄 Restart</button>
         </div>
         
         <div class="stats-bar">
@@ -251,6 +284,11 @@
         <div class="typing-card">
           <div class="words-display" id="words-display"></div>
           <input type="text" class="typing-input-field" id="typing-input" placeholder="Mulai ketik di sini..." autocomplete="off">
+        </div>
+
+        
+        <div class="restart-container">
+          <button class="btn-restart-bottom" onclick="resetTest()" id="btn-restart">🔄 Mulai Ulang</button>
         </div>
 
         <h3 style="font-size: 0.9rem; color: var(--text-muted);" id="txt-kb-title">Keyboard Layout</h3>
@@ -273,7 +311,7 @@
         </div>
       </div>
 
-      <!-- TAB 2: LEADERBOARD -->
+     
       <div id="tab-leaderboard" class="tab-content">
         <h2>🏆 Leaderboard Top Players (Live - 1 Hour Expiry)</h2>
         <div class="typing-card">
@@ -286,7 +324,7 @@
         </div>
       </div>
 
-      <!-- TAB 3: PROFILE -->
+    
       <div id="tab-profile" class="tab-content">
         <h2>👤 User Profile</h2>
         <div class="profile-card">
@@ -307,7 +345,7 @@
         </div>
       </div>
 
-      <!-- TAB 4: FRIENDS -->
+      
       <div id="tab-friends" class="tab-content">
         <h2>👥 Friends List (Online Now)</h2>
         <div class="typing-card" id="friends-tab-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
@@ -315,7 +353,7 @@
 
     </div>
 
-    <!-- Right Community / Chat Section -->
+   
     <div class="right-section">
       <div class="chat-header">
         <span>🌐 GLOBAL CHAT</span>
@@ -324,9 +362,28 @@
 
       <div class="chat-messages" id="chat-box"></div>
 
+     
+      <div id="reply-preview">
+        <span id="reply-preview-text">Replying to...</span>
+        <span onclick="cancelReply()" style="cursor:pointer; color:var(--text-red); font-weight:bold;">✖</span>
+      </div>
+
       <div class="chat-input-area">
-        <input type="text" id="chat-input" placeholder="វាយសារនៅទីនេះ..." onkeydown="if(event.key==='Enter') sendMsg()">
-        <button onclick="sendMsg()">SEND</button>
+        <div class="emoji-picker">
+          <span onclick="insertEmoji('😊')">😊</span>
+          <span onclick="insertEmoji('😂')">😂</span>
+          <span onclick="insertEmoji('❤️')">❤️</span>
+          <span onclick="insertEmoji('👍')">👍</span>
+          <span onclick="insertEmoji('🔥')">🔥</span>
+          <span onclick="insertEmoji('😎')">😎</span>
+          <span onclick="insertEmoji('✨')">✨</span>
+          <span onclick="insertEmoji('🚀')">🚀</span>
+        </div>
+        
+        <div class="chat-input-row">
+          <input type="text" id="chat-input" placeholder="វាយសារនៅទីនេះ..." onkeydown="if(event.key==='Enter') sendMsg()">
+          <button onclick="sendMsg()">SEND</button>
+        </div>
       </div>
 
       <div class="online-list" id="sidebar-online-list"></div>
@@ -334,7 +391,7 @@
 
   </div>
 
-  <!-- RESULT MODAL -->
+ 
   <div id="result-modal">
     <div class="result-card">
       <h2 style="text-align:center; color:var(--neon-cyan);">🎉 Hasil Tes Mengetik (60s)</h2>
@@ -365,7 +422,7 @@
   </div>
 
   <script>
-    // 🔥 Firebase Configuration
+   
     const firebaseConfig = {
       apiKey: "AIzaSyDJjhTRG-wdtzbMcwxVu8IQNA3fUsxJJPs",
       authDomain: "postvfb-59d24.firebaseapp.com",
@@ -392,12 +449,10 @@
       id: { home: "BERANDA", leaderboard: "PAPAN SKOR", profile: "PROFIL", friends: "TEMAN", placeholder: "Ketik di sini untuk memulai...", kb: "Tata Letak Keyboard", restart: "🔄 Mulai Ulang", time: "⏳ Waktu", wpm: "🚀 WPM", err: "❌ Salah" }
     };
 
-    // 💾 Load from localStorage (Default to "Guest" if not set)
     let currentLang = localStorage.getItem('typing_lang') || 'km';
     let currentProfileName = localStorage.getItem('typing_name') || "Guest";
     let currentUserAvatar = localStorage.getItem('typing_avatar') || `https://api.dicebear.com/7.x/bottts/svg?seed=${currentProfileName}`;
 
-    // Apply saved profile to UI immediately
     document.getElementById('profile-name-display').innerText = currentProfileName;
     document.getElementById('edit-name-input').value = currentProfileName === "Guest" ? "" : currentProfileName;
     document.getElementById('edit-name-input').placeholder = "Guest";
@@ -408,6 +463,7 @@
     let currentIndex = 0;
     let errorsCount = 0;
     let correctWordsCount = 0;
+    let replyingTo = null;
     
     const wordsDisplay = document.getElementById('words-display');
     const inputField = document.getElementById('typing-input');
@@ -423,7 +479,7 @@
 
     changeLanguage(currentLang, false);
 
-    // 🌐 Firebase Presence
+    
     const myPresenceRef = db.ref('online_users').push();
     function updateMyPresence() {
       myPresenceRef.set({ name: currentProfileName, avatar: currentUserAvatar });
@@ -458,7 +514,7 @@
       });
     });
 
-    // 🏆 Leaderboard Logic (1 Hour Expiry)
+    
     db.ref('leaderboard').on('value', (snapshot) => {
       const data = snapshot.val() || {};
       const now = Date.now();
@@ -535,6 +591,15 @@
     }
 
     initWords();
+
+    inputField.addEventListener('keydown', (e) => {
+     
+      if (e.key === 'Tab') {
+        e.preventDefault(); 
+        resetTest();
+        return;
+      }
+    });
 
     inputField.addEventListener('input', (e) => {
       const val = inputField.value;
@@ -736,7 +801,6 @@
       document.getElementById('profile-name-display').innerText = currentProfileName;
       localStorage.setItem('typing_name', currentProfileName);
 
-      // If avatar wasn't manually uploaded, update seed based on new name
       if (!localStorage.getItem('typing_avatar')) {
         currentUserAvatar = `https://api.dicebear.com/7.x/bottts/svg?seed=${currentProfileName}`;
         document.getElementById('user-avatar-img').src = currentUserAvatar;
@@ -746,38 +810,92 @@
       alert('Profil berhasil disimpan!');
     }
 
-    // 🔥 FIREBASE REALTIME CHAT FUNCTIONS 🔥
+   
+    function insertEmoji(emoji) {
+      const chatInput = document.getElementById('chat-input');
+      chatInput.value += emoji;
+      chatInput.focus();
+    }
+
+    function setReply(id, name, text) {
+      replyingTo = { id, name, text };
+      document.getElementById('reply-preview-text').innerText = `Replying to ${name}: "${text}"`;
+      document.getElementById('reply-preview').style.display = 'flex';
+      document.getElementById('chat-input').focus();
+    }
+
+    function cancelReply() {
+      replyingTo = null;
+      document.getElementById('reply-preview').style.display = 'none';
+    }
+
     function sendMsg() {
       const chatInput = document.getElementById('chat-input');
+      const text = chatInput.value.trim();
 
-      if (chatInput.value.trim() !== '') {
+      if (text !== '') {
         const messageData = {
           name: currentProfileName,
           avatar: currentUserAvatar,
-          text: chatInput.value,
+          text: text,
+          replyTo: replyingTo ? replyingTo : null,
           timestamp: Date.now()
         };
         db.ref('chats').push(messageData);
         chatInput.value = '';
+        cancelReply();
+      }
+    }
+
+    function deleteMsg(msgKey, msgSender) {
+      if (msgSender === currentProfileName) {
+        db.ref('chats').child(msgKey).remove();
+      } else {
+        alert("Anda hanya bisa menghapus pesan milik Anda sendiri!");
       }
     }
 
     const chatBox = document.getElementById('chat-box');
+
     db.ref('chats').limitToLast(50).on('child_added', (snapshot) => {
       const data = snapshot.val();
+      const msgKey = snapshot.key;
       const timeStr = new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      let replyHtml = '';
+      if (data.replyTo) {
+        replyHtml = `<div class="reply-box">↩️ <b>${escapeHtml(data.replyTo.name)}</b>: ${escapeHtml(data.replyTo.text)}</div>`;
+      }
+
+      let deleteBtn = '';
+      if (data.name === currentProfileName) {
+        deleteBtn = `<span onclick="deleteMsg('${msgKey}', '${data.name}')" style="color:var(--text-red);">🗑️ Hapus</span>`;
+      }
 
       const msgDiv = document.createElement('div');
       msgDiv.className = 'chat-msg';
+      msgDiv.id = `msg-${msgKey}`;
       msgDiv.innerHTML = `
         <img class="chat-avatar" src="${data.avatar || 'https://api.dicebear.com/7.x/bottts/svg?seed=Default'}" alt="User">
         <div class="msg-content">
-          <div class="name">${escapeHtml(data.name)} <span style="color:var(--text-muted); font-weight:normal;">${timeStr}</span></div>
-          <div class="text">${escapeHtml(data.text)}</div>
+          <div class="name">${escapeHtml(data.name)} <span style="color:var(--text-muted); font-weight:normal; font-size:0.7rem;">${timeStr}</span></div>
+          ${replyHtml}
+          <div class="text">${escapeHtml(data.text)}
+            <div class="msg-actions">
+              <span onclick="setReply('${msgKey}', '${escapeHtml(data.name)}', '${escapeHtml(data.text)}')">↩️ Balas</span>
+              ${deleteBtn}
+            </div>
+          </div>
         </div>
       `;
       chatBox.appendChild(msgDiv);
       chatBox.scrollTop = chatBox.scrollHeight;
+    });
+
+    db.ref('chats').on('child_removed', (snapshot) => {
+      const msgKey = snapshot.key;
+      const el = document.getElementById(`msg-${msgKey}`);
+      if (el) el.remove();
     });
 
     function escapeHtml(text) {
