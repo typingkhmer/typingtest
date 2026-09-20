@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TYPINGTEST</title>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Kantumruuy+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+  
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
   <style>
     :root {
       --bg: #0b0d19;
@@ -41,9 +46,8 @@
     .tab-content.active { display: flex; flex-direction: column; gap: 15px; }
 
     /* Stats Bar */
-    .stats-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(139, 92, 246, 0.1); border: 1px solid var(--border-purple); padding: 10px 20px; border-radius: 8px; font-size: 0.9rem; }
-    .stats-bar span { font-weight: bold; }
-    .badge { background: #3b0764; color: #d8b4fe; padding: 3px 10px; border-radius: 12px; border: 1px solid var(--border-purple); }
+    .stats-bar { display: flex; justify-content: space-around; align-items: center; background: rgba(139, 92, 246, 0.1); border: 1px solid var(--border-purple); padding: 12px 20px; border-radius: 12px; font-size: 1rem; }
+    .stats-bar div { font-weight: bold; display: flex; gap: 8px; align-items: center; }
 
     /* Typing Card */
     .typing-card {
@@ -51,41 +55,47 @@
       border: 2px solid var(--border-purple);
       box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
       border-radius: 12px;
-      padding: 20px;
+      padding: 25px;
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 20px;
     }
 
-    .text-display {
+    .words-display {
       font-family: 'Fira Code', monospace;
-      font-size: 1.15rem;
-      line-height: 1.8;
-      height: 140px;
-      overflow-y: auto;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 15px;
-      border-radius: 8px;
+      font-size: 1.35rem;
+      line-height: 2.4rem;
+      height: 115px;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 15px 20px;
+      border-radius: 10px;
       border: 1px solid #1e2538;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-content: flex-start;
       user-select: none;
+      position: relative;
     }
     
-    .char { color: var(--text-muted); transition: all 0.05s ease; }
-    .char.correct { color: var(--text-green); text-shadow: 0 0 5px rgba(74, 222, 128, 0.4); }
-    .char.incorrect { color: var(--text-red); background: rgba(244, 63, 94, 0.2); border-radius: 2px; }
-    .char.current { background: var(--neon-cyan); color: #000; font-weight: bold; border-radius: 2px; box-shadow: 0 0 8px var(--neon-cyan); }
+    .word-item { color: var(--text-muted); padding: 2px 6px; border-radius: 4px; transition: 0.1s; }
+    .word-item.current { background: rgba(6, 182, 212, 0.25); color: var(--neon-cyan); border-bottom: 2px solid var(--neon-cyan); font-weight: bold; }
+    .word-item.correct { color: var(--text-green); }
+    .word-item.incorrect { color: var(--text-red); background: rgba(244, 63, 94, 0.2); }
 
     .typing-input-field {
       width: 100%;
       background: #090b14;
-      border: 1px solid var(--neon-cyan);
-      border-radius: 8px;
-      padding: 12px 15px;
+      border: 2px solid var(--neon-cyan);
+      border-radius: 10px;
+      padding: 15px 20px;
       color: #fff;
-      font-family: 'Fira Code', monospace;
-      font-size: 1.05rem;
+      font-family: 'Kantumruuy Pro', sans-serif;
+      font-size: 1.15rem;
       outline: none;
-      box-shadow: 0 0 10px rgba(6, 182, 212, 0.2);
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+      text-align: center;
     }
 
     /* Keyboard Layout */
@@ -161,6 +171,38 @@
     .online-list { border-top: 1px solid #1e293b; padding: 10px 15px; display: flex; flex-direction: column; gap: 8px; height: 120px; overflow-y: auto; background: rgba(0,0,0,0.2); }
     .online-user { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
     .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+
+    /* Result Modal Styling */
+    #result-modal {
+      display: none;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(11, 13, 25, 0.95);
+      z-index: 1000;
+      justify-content: center; align-items: center;
+      padding: 20px;
+    }
+    .result-card {
+      background: var(--card-bg);
+      border: 2px solid var(--border-purple);
+      border-radius: 16px;
+      width: 100%; max-width: 700px;
+      padding: 30px;
+      display: flex; flex-direction: column; gap: 20px;
+      box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+    }
+    .result-header-stats { display: flex; justify-content: space-around; }
+    .stat-box { text-align: center; }
+    .stat-box .label { font-size: 0.9rem; color: var(--text-muted); }
+    .stat-box .value { font-size: 2.5rem; font-weight: bold; margin-top: 5px; }
+    
+    .chart-container {
+      background: rgba(0,0,0,0.4); border: 1px solid #1e2538; border-radius: 10px; padding: 15px; height: 180px; position: relative;
+    }
+    canvas { width: 100% !important; height: 100% !important; }
+    
+    .result-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+    .btn-retry { background: var(--border-purple); color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; transition: 0.2s; }
+    .btn-retry:hover { opacity: 0.9; transform: scale(1.02); }
   </style>
 </head>
 <body>
@@ -197,19 +239,18 @@
       <div id="tab-home" class="tab-content active">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h2 style="font-size: 1.2rem;" id="txt-title">Typing Test</h2>
-          <button onclick="resetTest()" style="background:var(--neon-cyan); border:none; color:#000; font-weight:bold; padding:5px 12px; border-radius:6px; cursor:pointer;">🔄 Restart</button>
+          <button onclick="resetTest()" style="background:var(--neon-cyan); border:none; color:#000; font-weight:bold; padding:6px 15px; border-radius:6px; cursor:pointer;" id="btn-restart">🔄 Restart</button>
         </div>
         
         <div class="stats-bar">
-          <div>WPM: <span style="color:var(--neon-pink);" id="wpm-val">0</span></div>
-          <div>ACCURACY: <span style="color:var(--neon-cyan);" id="acc-val">100%</span></div>
-          <div>TIME: <span id="time-val">0:00</span></div>
-          <div class="badge">LVL: 15 (Explorer)</div>
+          <div><span id="lbl-time">⏳ Waktu</span>: <span style="color:var(--neon-cyan);" id="time-val">60s</span></div>
+          <div><span id="lbl-wpm">🚀 WPM</span>: <span style="color:var(--neon-pink);" id="wpm-val">0</span></div>
+          <div><span id="lbl-err">❌ Salah</span>: <span style="color:var(--text-red);" id="err-val">0</span></div>
         </div>
 
         <div class="typing-card">
-          <div class="text-display" id="text-display"></div>
-          <input type="text" class="typing-input-field" id="typing-input" placeholder="ចុចវាយនៅទីនេះ ដើម្បីចាប់ផ្តើម..." autocomplete="off">
+          <div class="words-display" id="words-display"></div>
+          <input type="text" class="typing-input-field" id="typing-input" placeholder="Mulai ketik di sini..." autocomplete="off">
         </div>
 
         <h3 style="font-size: 0.9rem; color: var(--text-muted);" id="txt-kb-title">Keyboard Layout</h3>
@@ -234,21 +275,13 @@
 
       <!-- TAB 2: LEADERBOARD -->
       <div id="tab-leaderboard" class="tab-content">
-        <h2>🏆 Leaderboard Top Players</h2>
+        <h2>🏆 Leaderboard Top Players (Live - 1 Hour Expiry)</h2>
         <div class="typing-card">
           <table style="width:100%; text-align:left; border-collapse: collapse;">
             <tr style="border-bottom:1px solid #2e3454; color:var(--neon-cyan);">
               <th style="padding:10px;">#</th><th>Player</th><th>WPM</th><th>Accuracy</th>
             </tr>
-            <tr style="border-bottom:1px solid #1a1e33;">
-              <td style="padding:10px;">🥇 1</td><td>Sokha Pro</td><td>135</td><td>99%</td>
-            </tr>
-            <tr style="border-bottom:1px solid #1a1e33;">
-              <td style="padding:10px;">🥈 2</td><td>Nara Speed</td><td>125</td><td>98%</td>
-            </tr>
-            <tr>
-              <td style="padding:10px;">🥉 3</td><td>Borey Khmer</td><td>110</td><td>95%</td>
-            </tr>
+            <tbody id="leaderboard-body"></tbody>
           </table>
         </div>
       </div>
@@ -258,17 +291,17 @@
         <h2>👤 User Profile</h2>
         <div class="profile-card">
           <div class="avatar-wrapper">
-            <img id="user-avatar-img" class="profile-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Smey" alt="Avatar">
+            <img id="user-avatar-img" class="profile-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Guest" alt="Avatar">
             <button class="upload-btn" onclick="document.getElementById('file-input').click()">📷</button>
             <input type="file" id="file-input" accept="image/*" style="display:none" onchange="uploadAvatar(event)">
           </div>
 
-          <h3 id="profile-name-display" style="color:var(--neon-pink);">Keo Chanreaksmey</h3>
+          <h3 id="profile-name-display" style="color:var(--neon-pink);">Guest</h3>
           <p style="color:var(--text-muted); font-size:0.85rem;">Level 15 Typing Explorer</p>
           
           <div style="width:100%; display:flex; flex-direction:column; gap:10px; margin-top:10px;">
             <label style="font-size:0.8rem; color:var(--neon-cyan);">កែសម្រួលឈ្មោះ៖</label>
-            <input type="text" id="edit-name-input" value="Keo Chanreaksmey" class="typing-input-field" style="padding:8px 12px;">
+            <input type="text" id="edit-name-input" value="Guest" class="typing-input-field" style="padding:8px 12px; text-align:left;">
             <button onclick="saveProfile()" style="background:var(--border-purple); color:white; border:none; padding:8px; border-radius:6px; cursor:pointer; font-weight:bold;">រក្សាទុក</button>
           </div>
         </div>
@@ -276,13 +309,8 @@
 
       <!-- TAB 4: FRIENDS -->
       <div id="tab-friends" class="tab-content">
-        <h2>👥 Friends List</h2>
-        <div class="typing-card">
-          <p>🟢 Sokha (Online)</p>
-          <p>🟢 Nara (Online)</p>
-          <p>🟢 Borey (Online)</p>
-          <p>🔴 Khemera (Offline)</p>
-        </div>
+        <h2>👥 Friends List (Online Now)</h2>
+        <div class="typing-card" id="friends-tab-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
       </div>
 
     </div>
@@ -291,86 +319,361 @@
     <div class="right-section">
       <div class="chat-header">
         <span>🌐 GLOBAL CHAT</span>
-        <span style="color:var(--text-muted);">👥 <span id="online-count">4</span></span>
+        <span style="color:var(--text-muted);">👥 <span id="online-count">0</span></span>
       </div>
 
-      <div class="chat-messages" id="chat-box">
-        <div class="chat-msg">
-          <img class="chat-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Sokha" alt="Sokha">
-          <div class="msg-content">
-            <div class="name">User: Sokha <span style="color:var(--text-muted); font-weight:normal;">8:02 PM</span></div>
-            <div class="text">តោះ! លេង competitive!</div>
-          </div>
-        </div>
-        <div class="chat-msg">
-          <img class="chat-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Nara" alt="Nara">
-          <div class="msg-content">
-            <div class="name">User: Nara <span style="color:var(--text-muted); font-weight:normal;">8:01 PM</span></div>
-            <div class="text">WPM: 125!! សប្បាយចិត្តណាស់!</div>
-          </div>
-        </div>
-      </div>
+      <div class="chat-messages" id="chat-box"></div>
 
       <div class="chat-input-area">
         <input type="text" id="chat-input" placeholder="វាយសារនៅទីនេះ..." onkeydown="if(event.key==='Enter') sendMsg()">
         <button onclick="sendMsg()">SEND</button>
       </div>
 
-      <div class="online-list">
-        <div class="online-user"><div class="status-dot"></div> Sokha</div>
-        <div class="online-user"><div class="status-dot"></div> Nara</div>
-        <div class="online-user"><div class="status-dot"></div> Borey</div>
-        <div class="online-user"><div class="status-dot" style="background:#64748b; box-shadow:none;"></div> Khemera</div>
-      </div>
+      <div class="online-list" id="sidebar-online-list"></div>
     </div>
 
   </div>
 
+  <!-- RESULT MODAL -->
+  <div id="result-modal">
+    <div class="result-card">
+      <h2 style="text-align:center; color:var(--neon-cyan);">🎉 Hasil Tes Mengetik (60s)</h2>
+      <div class="result-header-stats">
+        <div class="stat-box">
+          <div class="label">WPM</div>
+          <div class="value" style="color:var(--neon-pink);" id="res-wpm">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="label">Akurasi</div>
+          <div class="value" style="color:var(--neon-cyan);" id="res-acc">100%</div>
+        </div>
+        <div class="stat-box">
+          <div class="label">Salah</div>
+          <div class="value" style="color:var(--text-red);" id="res-err">0</div>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <canvas id="wpmChart"></canvas>
+      </div>
+
+      <div class="result-actions">
+        <span style="color:var(--text-muted); font-size:0.85rem;" id="res-user-tag">/user/guest</span>
+        <button class="btn-retry" onclick="closeResultModal()">Mulai Ulang (Restart)</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-  
+    // 🔥 Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDJjhTRG-wdtzbMcwxVu8IQNA3fUsxJJPs",
+      authDomain: "postvfb-59d24.firebaseapp.com",
+      databaseURL: "https://postvfb-59d24-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "postvfb-59d24",
+      storageBucket: "postvfb-59d24.firebasestorage.app",
+      messagingSenderId: "922687504355",
+      appId: "1:922687504355:web:7373eff21d1bdd10966ad6",
+      measurementId: "G-9ZFBJ7JBJK"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
     const dataKh = ["kal", "phearun", "nv", "vannak", "slanh", "kmeang", "jol", "jit", "der", "lg", "srat", "kor", "run", "tv", "vinh", "mor", "min", "derl", "jes", "klach", "nak", "na", "ngaii", "muy", "mean", "ke", "som", "lanh", "nh", "ter", "ort", "prom", "pi", "lob", "leler", "pek", "ban", "chea", "dg", "puk", "ng", "sit", "chkut", "name", "voan", "koy", "ouy", "sak", "bek", "jeang", "na", "ber", "vea", "tok", "nis", "klean", "bay", "has", "cher", "kbal", "nas", "lok", "hery", "thonh", "hot", "anh", "dob", "bek", "pler", "lan", "motor", "kev", "kabob", "nom", "nham", "bay", "mhob", "klean", "ey", "hmm", "puk", "hg", "rean", "kru", "lork", "kru", "nak", "ming", "pu", "kmeang", "has", "pler", "juk", "tnam", "poipet", "kmeang", "angkor", "wat", "vital", "cambodia", "khmer", "klang", "jit", "khg", "masel", "minh", "khg", "kbea", "chgay", "chganh", "cheat", "kdmv", "srul", "klang", "hea", "therk", "tmenh", "cher", "met", "av", "kor", "lyly", "chana", "noun", "neang", "ter", "neak", "jg", "niyeay", "ampi", "khang","ler", "banthem", "banteb", "mdg", "tt", "khjal", "tangos", "ster", "ter", "nv", "cheamuy", "krr", "chea", "nis", "sat", "avy", "muy", "tt", "na", "muy", "nv", "mean", "jomvinh", "doch", "derl", "sur", "nv", "chgay", "tlob", "trov", "doysa", "tleab", "pimon", "jam", "pderm", "kompong", "seavpav", "kmeang", "brozz", "krusa", "tix", "toch", "bun", "ahha", "somrab", "rksee", "ttul", "kbal", "jom", "thonh", "rhas", "kur", "niyeay", "pitherksamot", "klas", "avy", "pelklas", "knom", "tver", "beb", "oy", "peak", "vea", "veang", "kom", "tha", "oy", "nh", "min", "jes", "singkhmer", "morpi", "dak", "beab", "nis", "therb", "mean", "peak", "sorsea", "merl", "tv", "loy", "doch", "ke", "pheak", "jren", "peak", "yg", "sorsea", "klai", "klai", "doch", "chnes", "hx", "terb", "knom", "tver", "beb", "nis", "salarean", "mean", "kru", "nv", "tes", "mean", "nakmak", "bang", "paon", "trov", "jes", "slanh", "kne", "songsa", "sneaha", "kambit", "motor", "lanjis", "nakklas", "puk", "khea", "niyeay", "derm", "ke", "chea", "pi", "seas", "kmeang", "poipet", "ter", "mdg", "muy", "ngaii", "muy", "ngaii", "min", "kit", "khom", "phrong", "niyeay", "derm", "khom", "tv", "tham", "ten", "vaii", "khom", "tha", "koch", "baycha", "micheat", "breangkala", "av", "ach", "plerng", "punler"];
     const dataEn = ["the", "great", "world", "both", "run", "by", "near", "most", "so", "people", "picture", "once", "large", "between", "most", "light", "write", "are", "go", "picture", "me", "country", "little", "keep", "read", "call", "never", "open", "that", "story", "good", "until", "write", "air", "kind", "there", "change", "far", "over", "any", "may", "three", "children", "said", "put", "is", "us", "that", "animal", "let", "was", "America", "change", "other", "always", "every", "animal", "find", "old", "picture", "made", "work", "school", "grow", "us", "ask", "life", "find", "spell", "never", "went", "she", "food", "really", "run", "almost", "own", "she", "left", "by", "question", "home", "or", "help", "second", "quickly", "just", "turn", "these", "state", "who", "so", "water", "even", "large", "eye", "below", "be", "face", "hear", "went", "at", "when", "number", "important", "sound", "who", "kecil", "into", "enough", "tell", "only", "country", "really", "turn", "white", "home", "they", "your", "because", "such", "not", "form", "how", "they", "left", "cut", "part", "sentence", "be", "between", "dream"];
     const dataId = ["saya", "pulang", "biasa", "itu", "telah", "sambil", "punya", "hari", "yang", "anda", "dengan", "makin", "pada", "diri", "sini", "khusus", "jalan", "bahwa", "baru", "melakukan", "harus", "mencari", "bagian", "memang", "kamu", "anda", "datang", "kali", "uang", "ingin", "tanpa", "kemudian", "saat", "sesuai", "memang", "cepat", "jadi", "luar", "ke", "sering", "masuk", "dengan", "ada", "sangat", "banyak", "kepala", "sementara", "tentang", "ketika", "jadi", "tempat", "yaitu", "menjadi", "setelah", "menurut", "hati", "bagian", "tetapi", "tanpa", "uang", "sini", "memiliki", "sekalipun", "merupakan", "kalau", "juga", "maupun", "mana", "ku", "naik", "juta", "pulang", "tiba", "tetapi", "dapat", "kini", "baik", "naik", "ke", "mengatakan", "mudah", "mudah", "sekali", "hal", "pernah", "sedang", "tak", "paling", "serta", "melalui", "kami", "baik", "memberi", "malam", "lain", "dari", "mengatakan", "dia", "juga", "kepala", "hal", "untuk", "jauh", "punya", "untuk", "anak", "kembali", "semua", "akibat", "sini", "tentang", "tengah", "selalu", "tetapi", "hari", "maka", "di", "membuat", "sambil", "pusat", "kamu", "namun", "bukan", "bisa", "malam", "tempat", "tapi", "sering", "memang", "kalau", "kecil", "luar", "siap", "mencari", "pernah", "terus", "besar", "sejak", "akan", "jelas", "yaitu", "sekitar", "mereka", "mampu", "mata", "telah", "sini", "tetapi", "sebab", "diri", "mau", "jangan", "sehingga", "seluruh", "ingin", "aku", "sering", "juga", "ada", "kamu", "uang", "kembali", "punya", "langsung", "seluruh", "naik", "bahwa", "suatu", "kecil", "dia"];
     const dataKhmer = ["សួស្តី", "កម្ពុជា", "សន្តិភាព", "រស្មី", "វាយអត្ថបទ", "រៀន", "ចំណេះដឹង", "បច្ចេកវិទ្យា", "អនាគត", "ជោគជ័យ", "ស្រលាញ់", "សាលារៀន", "គ្រូ", "សិស្ស", "មិត្តភក្តិ", "សប្បាយ", "រីករាយ", "ម្ហូប", "អង្គរវត្ត", "ខ្មែរ", "វប្បធម៌", "អរិយធម៌", "ប្រវត្តិសាស្ត្រ", "ការងារ", "ព្យាយាម", "អត់ធ្មត់", "គោលដៅ", "សុបិន", "កម្លាំង", "ចិត្ត", "ជឿជាក់", "អរគុណ", "សុំទោស", "សូមជម្រាបសួរ", "មេឃ", "ដី", "ទឹក", "ភ្លើង", "ខ្យល់", "ដើមឈើ", "ផ្កា", "សត្វ", "ភ្នំ", "សមុទ្រ", "កោះ", "ទន្លេ", "ផ្លូវ", "ផ្ទះ", "គ្រួសារ", "បងប្អូន", "ឪពុក", "ម្តាយ", "កូន", "ចៅ", "លោកតា", "លោកយាយ", "ក្នុង", "ជាតិ", "នេះ", "គ្មាន", "ចង់", "បាន", "អ្វី", "ឡើយ", "ត្រឹម", "ចិត្ត", "ស្នេហ៍", "អូន", "មក", "បង", "ទោះ", "មិន", "ល្អ", "គ្រប់", "យ៉ាង", "តែជាសំណាងបង","មានអូន", "ក្នុងបេះដូង", "គ្រប់គ្រាន់ហើយ"];
 
     const navTranslations = {
-      km: { home: "ទំព័រដើម", leaderboard: "ចំណាត់ថ្នាក់", profile: "ប្រវត្តិរូប", friends: "មិត្តភក្តិ", placeholder: "ចុចវាយនៅទីនេះ ដើម្បីចាប់ផ្តើម...", kb: "ក្ដារចុច Virtual" },
-      en: { home: "HOME", leaderboard: "LEADERBOARD", profile: "PROFILE", friends: "FRIENDS", placeholder: "Click here to start typing...", kb: "Keyboard Layout" },
-      latin: { home: "TOMPOR DERM", leaderboard: "CHAMNAT THNAK", profile: "PRAVATI ROUP", friends: "MITTAK PHEAK", placeholder: "Chuch vay ney thene...", kb: "Kdar Chuch Virtual" },
-      id: { home: "BERANDA", leaderboard: "PAPAN SKOR", profile: "PROFIL", friends: "TEMAN", placeholder: "Ketik di sini untuk memulai...", kb: "Tata Letak Keyboard" }
+      km: { home: "ទំព័រដើម", leaderboard: "ចំណាត់ថ្នាក់", profile: "ប្រវត្តិរូប", friends: "មិត្តភក្តិ", placeholder: "ចុចវាយនៅទីនេះ ដើម្បីចាប់ផ្តើម...", kb: "ក្ដារចុច Virtual", restart: "🔄 ចាប់ផ្តើមម្ដងទៀត", time: "⏳ ពេល", wpm: "🚀 WPM", err: "❌ ខុស" },
+      en: { home: "HOME", leaderboard: "LEADERBOARD", profile: "PROFILE", friends: "FRIENDS", placeholder: "Click here to start typing...", kb: "Keyboard Layout", restart: "🔄 Restart", time: "⏳ Time", wpm: "🚀 WPM", err: "❌ Error" },
+      latin: { home: "TOMPOR DERM", leaderboard: "CHAMNAT THNAK", profile: "PRAVATI ROUP", friends: "MITTAK PHEAK", placeholder: "Chuch vay ney thene...", kb: "Kdar Chuch Virtual", restart: "🔄 Restart", time: "⏳ Pel", wpm: "🚀 WPM", err: "❌ Salah" },
+      id: { home: "BERANDA", leaderboard: "PAPAN SKOR", profile: "PROFIL", friends: "TEMAN", placeholder: "Ketik di sini untuk memulai...", kb: "Tata Letak Keyboard", restart: "🔄 Mulai Ulang", time: "⏳ Waktu", wpm: "🚀 WPM", err: "❌ Salah" }
     };
 
-    let currentLang = 'km';
-    let targetText = "";
+    // 💾 Load from localStorage (Default to "Guest" if not set)
+    let currentLang = localStorage.getItem('typing_lang') || 'km';
+    let currentProfileName = localStorage.getItem('typing_name') || "Guest";
+    let currentUserAvatar = localStorage.getItem('typing_avatar') || `https://api.dicebear.com/7.x/bottts/svg?seed=${currentProfileName}`;
 
-    const textDisplay = document.getElementById('text-display');
+    // Apply saved profile to UI immediately
+    document.getElementById('profile-name-display').innerText = currentProfileName;
+    document.getElementById('edit-name-input').value = currentProfileName === "Guest" ? "" : currentProfileName;
+    document.getElementById('edit-name-input').placeholder = "Guest";
+    document.getElementById('user-avatar-img').src = currentUserAvatar;
+    document.getElementById('lang-select').value = currentLang;
+
+    let wordsList = [];
+    let currentIndex = 0;
+    let errorsCount = 0;
+    let correctWordsCount = 0;
+    
+    const wordsDisplay = document.getElementById('words-display');
     const inputField = document.getElementById('typing-input');
-    const wpmEl = document.getElementById('wpm-val');
-    const accEl = document.getElementById('acc-val');
     const timeEl = document.getElementById('time-val');
+    const wpmEl = document.getElementById('wpm-val');
+    const errEl = document.getElementById('err-val');
 
-    let startTime = null;
+    let timeLeft = 60;
     let timerInterval = null;
-    let isFinished = false;
-    let currentUserAvatar = "https://api.dicebear.com/7.x/bottts/svg?seed=Smey";
+    let isPlaying = false;
+    let wpmHistory = [];
+    let chartInterval = null;
 
-    // Random sentence generator from word arrays
-    function generateRandomSentence(langKey, wordCount = 25) {
-      let array;
-      if (langKey === 'km') array = dataKhmer;
-      else if (langKey === 'en') array = dataEn;
-      else if (langKey === 'latin') array = dataKh;
-      else if (langKey === 'id') array = dataId;
-      
-      let result = [];
-      for (let i = 0; i < wordCount; i++) {
-        const randomIndex = Math.floor(Math.random() * array.length);
-        result.push(array[randomIndex]);
-      }
-      return result.join(' ');
+    changeLanguage(currentLang, false);
+
+    // 🌐 Firebase Presence
+    const myPresenceRef = db.ref('online_users').push();
+    function updateMyPresence() {
+      myPresenceRef.set({ name: currentProfileName, avatar: currentUserAvatar });
+      myPresenceRef.onDisconnect().remove();
     }
 
-    // Tab Switcher Function
+    db.ref('.info/connected').on('value', (snapshot) => {
+      if (snapshot.val() === true) updateMyPresence();
+    });
+
+    db.ref('online_users').on('value', (snapshot) => {
+      const onlineUsers = snapshot.val() || {};
+      const userKeys = Object.keys(onlineUsers);
+      document.getElementById('online-count').innerText = userKeys.length;
+
+      const sidebarList = document.getElementById('sidebar-online-list');
+      sidebarList.innerHTML = '';
+      const friendsTabList = document.getElementById('friends-tab-list');
+      friendsTabList.innerHTML = '';
+
+      userKeys.forEach(key => {
+        const user = onlineUsers[key];
+        const sideDiv = document.createElement('div');
+        sideDiv.className = 'online-user';
+        sideDiv.innerHTML = `<div class="status-dot"></div> ${escapeHtml(user.name)}`;
+        sidebarList.appendChild(sideDiv);
+
+        const friendP = document.createElement('p');
+        friendP.style.cssText = "display: flex; align-items: center; gap: 10px; font-size: 0.9rem; padding: 6px 0; border-bottom: 1px solid #1e2238;";
+        friendP.innerHTML = `<img src="${user.avatar}" style="width:28px; height:28px; border-radius:50%; border:1px solid var(--neon-cyan);"> 🟢 <b>${escapeHtml(user.name)}</b> (Online)`;
+        friendsTabList.appendChild(friendP);
+      });
+    });
+
+    // 🏆 Leaderboard Logic (1 Hour Expiry)
+    db.ref('leaderboard').on('value', (snapshot) => {
+      const data = snapshot.val() || {};
+      const now = Date.now();
+      const oneHourMs = 60 * 60 * 1000;
+      let scoresArray = [];
+
+      Object.keys(data).forEach(key => {
+        const entry = data[key];
+        if (now - entry.timestamp < oneHourMs) {
+          scoresArray.push(entry);
+        } else {
+          db.ref('leaderboard').child(key).remove();
+        }
+      });
+
+      scoresArray.sort((a, b) => b.wpm - a.wpm);
+      const lbBody = document.getElementById('leaderboard-body');
+      lbBody.innerHTML = '';
+
+      if (scoresArray.length === 0) {
+        lbBody.innerHTML = `<tr><td colspan="4" style="padding:15px; text-align:center; color:var(--text-muted);">Tidak ada skor dalam 1 jam terakhir!</td></tr>`;
+        return;
+      }
+
+      scoresArray.forEach((item, index) => {
+        let medal = `#${index + 1}`;
+        if (index === 0) medal = '🥇 1';
+        else if (index === 1) medal = '🥈 2';
+        else if (index === 2) medal = '🥉 3';
+
+        const row = document.createElement('tr');
+        row.style.borderBottom = "1px solid #1a1e33";
+        row.innerHTML = `
+          <td style="padding:10px;">${medal}</td>
+          <td>${escapeHtml(item.name)}</td>
+          <td style="color:var(--neon-pink); font-weight:bold;">${item.wpm}</td>
+          <td style="color:var(--neon-cyan);">${item.accuracy}</td>
+        `;
+        lbBody.appendChild(row);
+      });
+    });
+
+    function getSelectedArray(langKey) {
+      if (langKey === 'km') return dataKhmer;
+      if (langKey === 'en') return dataEn;
+      if (langKey === 'latin') return dataKh;
+      if (langKey === 'id') return dataId;
+      return dataKhmer;
+    }
+
+    function initWords() {
+      const arr = getSelectedArray(currentLang);
+      wordsList = [];
+      for (let i = 0; i < 150; i++) {
+        const rand = arr[Math.floor(Math.random() * arr.length)];
+        wordsList.push(rand);
+      }
+      currentIndex = 0;
+      errorsCount = 0;
+      correctWordsCount = 0;
+      renderWords();
+    }
+
+    function renderWords() {
+      wordsDisplay.innerHTML = '';
+      wordsList.forEach((word, index) => {
+        const span = document.createElement('span');
+        span.className = 'word-item';
+        if (index === currentIndex) span.classList.add('current');
+        span.innerText = word;
+        wordsDisplay.appendChild(span);
+      });
+      wordsDisplay.scrollTop = 0;
+    }
+
+    initWords();
+
+    inputField.addEventListener('input', (e) => {
+      const val = inputField.value;
+
+      if (!isPlaying && val.length > 0) {
+        isPlaying = true;
+        timeLeft = 60;
+        wpmHistory = [];
+        timerInterval = setInterval(updateCountdown, 1000);
+        chartInterval = setInterval(recordWpmPoint, 1000);
+      }
+
+      if (val.endsWith(' ')) {
+        const typedWord = val.trim();
+        const targetWord = wordsList[currentIndex];
+        
+        const wordSpans = wordsDisplay.querySelectorAll('.word-item');
+        const currentSpan = wordSpans[currentIndex];
+
+        if (typedWord === targetWord) {
+          currentSpan.classList.remove('current', 'incorrect');
+          currentSpan.classList.add('correct');
+          correctWordsCount++;
+        } else {
+          currentSpan.classList.remove('current', 'correct');
+          currentSpan.classList.add('incorrect');
+          errorsCount++;
+          errEl.innerText = errorsCount;
+        }
+
+        currentIndex++;
+        inputField.value = '';
+
+        if (currentIndex < wordsList.length) {
+          wordSpans[currentIndex].classList.add('current');
+          
+          const currentTop = currentSpan.offsetTop;
+          const nextTop = wordSpans[currentIndex].offsetTop;
+          if (nextTop > currentTop) {
+            wordsDisplay.scrollTop = nextTop - 10;
+          }
+        } else {
+          finishTest();
+        }
+      }
+
+      const currentWpm = correctWordsCount;
+      wpmEl.innerText = currentWpm;
+    });
+
+    function updateCountdown() {
+      if (timeLeft > 0) {
+        timeLeft--;
+        timeEl.innerText = timeLeft + 's';
+      } else {
+        finishTest();
+      }
+    }
+
+    function recordWpmPoint() {
+      if (isPlaying) {
+        wpmHistory.push(correctWordsCount);
+      }
+    }
+
+    function finishTest() {
+      clearInterval(timerInterval);
+      clearInterval(chartInterval);
+      isPlaying = false;
+      inputField.disabled = true;
+
+      const finalWpm = correctWordsCount;
+      const totalAttempted = correctWordsCount + errorsCount;
+      const finalAcc = totalAttempted > 0 ? Math.round((correctWordsCount / totalAttempted) * 100) + '%' : '100%';
+
+      const scoreData = {
+        name: currentProfileName,
+        wpm: finalWpm,
+        accuracy: finalAcc,
+        timestamp: Date.now()
+      };
+      db.ref('leaderboard').push(scoreData);
+
+      document.getElementById('res-wpm').innerText = finalWpm;
+      document.getElementById('res-acc').innerText = finalAcc;
+      document.getElementById('res-err').innerText = errorsCount;
+      document.getElementById('res-user-tag').innerText = "/user/" + currentProfileName.toLowerCase().replace(/\s+/g, '');
+      document.getElementById('result-modal').style.display = 'flex';
+
+      drawWpmChart(wpmHistory);
+    }
+
+    function drawWpmChart(data) {
+      const canvas = document.getElementById('wpmChart');
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (data.length === 0) return;
+
+      const maxWpm = Math.max(...data, 50);
+      const stepX = canvas.width / Math.max(data.length - 1, 1);
+      
+      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      gradient.addColorStop(0, 'rgba(139, 92, 246, 0.4)');
+      gradient.addColorStop(1, 'rgba(139, 92, 246, 0.0)');
+
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height);
+
+      data.forEach((val, i) => {
+        const x = i * stepX;
+        const y = canvas.height - (val / maxWpm) * (canvas.height - 20) - 10;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+
+      ctx.lineTo(canvas.width, canvas.height);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+
+      ctx.beginPath();
+      data.forEach((val, i) => {
+        const x = i * stepX;
+        const y = canvas.height - (val / maxWpm) * (canvas.height - 20) - 10;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.strokeStyle = '#a855f7';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
+
+    function closeResultModal() {
+      document.getElementById('result-modal').style.display = 'none';
+      resetTest();
+    }
+
     function switchTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
@@ -379,101 +682,39 @@
       document.getElementById('nav-' + tabName).classList.add('active');
     }
 
-    // Language Change Function
-    function changeLanguage(langKey) {
+    function changeLanguage(langKey, shouldReset = true) {
       currentLang = langKey;
-      
+      localStorage.setItem('typing_lang', langKey);
+
       const t = navTranslations[langKey];
       document.getElementById('nav-home').innerText = t.home;
       document.getElementById('nav-leaderboard').innerText = t.leaderboard;
       document.getElementById('nav-profile').innerText = t.profile;
       document.getElementById('nav-friends').innerText = t.friends;
-      document.getElementById('typing-input').placeholder = t.placeholder;
+      inputField.placeholder = t.placeholder;
       document.getElementById('txt-kb-title').innerText = t.kb;
+      document.getElementById('btn-restart').innerText = t.restart;
+      document.getElementById('lbl-time').innerText = t.time;
+      document.getElementById('lbl-wpm').innerText = t.wpm;
+      document.getElementById('lbl-err').innerText = t.err;
 
-      resetTest();
-    }
-
-    // Render Text Spans
-    function renderText() {
-      targetText = generateRandomSentence(currentLang, 25);
-      textDisplay.innerHTML = '';
-      targetText.split('').forEach((char, index) => {
-        const span = document.createElement('span');
-        span.className = 'char';
-        if (index === 0) span.classList.add('current');
-        span.innerText = char;
-        textDisplay.appendChild(span);
-      });
-    }
-
-    renderText();
-
-    // Typing Logic
-    inputField.addEventListener('input', () => {
-      if (!startTime && inputField.value.length > 0) {
-        startTime = new Date();
-        timerInterval = setInterval(updateTimer, 1000);
-      }
-
-      if (isFinished) return;
-
-      const typedVal = inputField.value;
-      const chars = textDisplay.querySelectorAll('.char');
-      let correctChars = 0;
-
-      chars.forEach((span, index) => {
-        const typedChar = typedVal[index];
-        span.classList.remove('correct', 'incorrect', 'current');
-
-        if (typedChar == null) {
-          if (index === typedVal.length) span.classList.add('current');
-        } else if (typedChar === span.innerText) {
-          span.classList.add('correct');
-          correctChars++;
-        } else {
-          span.classList.add('incorrect');
-        }
-      });
-
-      const accuracy = typedVal.length > 0 ? Math.round((correctChars / typedVal.length) * 100) : 100;
-      accEl.innerText = accuracy + '%';
-
-      if (startTime) {
-        const timeElapsedSeconds = (new Date() - startTime) / 1000;
-        const wpm = Math.round((correctChars / 5) / (timeElapsedSeconds / 60));
-        wpmEl.innerText = isNaN(wpm) || wpm < 0 ? 0 : wpm;
-      }
-
-      if (typedVal.length >= targetText.length) {
-        clearInterval(timerInterval);
-        isFinished = true;
-        inputField.disabled = true;
-        alert(`🎉 រួចរាល់! WPM: ${wpmEl.innerText} | Accuracy: ${accEl.innerText}`);
-      }
-    });
-
-    function updateTimer() {
-      if (!startTime) return;
-      const totalSeconds = Math.floor((new Date() - startTime) / 1000);
-      const mins = Math.floor(totalSeconds / 60);
-      const secs = totalSeconds % 60;
-      timeEl.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+      if (shouldReset) resetTest();
     }
 
     function resetTest() {
       clearInterval(timerInterval);
-      startTime = null;
-      isFinished = false;
+      clearInterval(chartInterval);
+      timeLeft = 60;
+      isPlaying = false;
       inputField.disabled = false;
       inputField.value = '';
+      timeEl.innerText = '60s';
       wpmEl.innerText = '0';
-      accEl.innerText = '100%';
-      timeEl.innerText = '0:00';
-      renderText();
+      errEl.innerText = '0';
+      initWords();
+      inputField.focus();
     }
 
-    // Profile Upload Picture Function
     function uploadAvatar(event) {
       const file = event.target.files[0];
       if (file) {
@@ -481,49 +722,69 @@
         reader.onload = function(e) {
           currentUserAvatar = e.target.result;
           document.getElementById('user-avatar-img').src = currentUserAvatar;
+          localStorage.setItem('typing_avatar', currentUserAvatar);
+          updateMyPresence();
         }
         reader.readAsDataURL(file);
       }
     }
 
     function saveProfile() {
-      const newName = document.getElementById('edit-name-input').value;
-      if (newName) {
-        document.getElementById('profile-name-display').innerText = newName;
-        alert('រក្សាទុកប្រវត្តិរូបជោគជ័យ!');
+      const inputVal = document.getElementById('edit-name-input').value.trim();
+      currentProfileName = inputVal !== "" ? inputVal : "Guest";
+      
+      document.getElementById('profile-name-display').innerText = currentProfileName;
+      localStorage.setItem('typing_name', currentProfileName);
+
+      // If avatar wasn't manually uploaded, update seed based on new name
+      if (!localStorage.getItem('typing_avatar')) {
+        currentUserAvatar = `https://api.dicebear.com/7.x/bottts/svg?seed=${currentProfileName}`;
+        document.getElementById('user-avatar-img').src = currentUserAvatar;
       }
+
+      updateMyPresence();
+      alert('Profil berhasil disimpan!');
     }
 
-    // Chat Functions
+    // 🔥 FIREBASE REALTIME CHAT FUNCTIONS 🔥
     function sendMsg() {
       const chatInput = document.getElementById('chat-input');
-      const chatBox = document.getElementById('chat-box');
-      const profileName = document.getElementById('profile-name-display').innerText;
 
       if (chatInput.value.trim() !== '') {
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        
-        const msgDiv = document.createElement('div');
-        msgDiv.className = 'chat-msg';
-        msgDiv.innerHTML = `
-          <img class="chat-avatar" src="${currentUserAvatar}" alt="User">
-          <div class="msg-content">
-            <div class="name">${profileName} <span style="color:var(--text-muted); font-weight:normal;">${timeStr}</span></div>
-            <div class="text">${escapeHtml(chatInput.value)}</div>
-          </div>
-        `;
-        chatBox.appendChild(msgDiv);
+        const messageData = {
+          name: currentProfileName,
+          avatar: currentUserAvatar,
+          text: chatInput.value,
+          timestamp: Date.now()
+        };
+        db.ref('chats').push(messageData);
         chatInput.value = '';
-        chatBox.scrollTop = chatBox.scrollHeight;
       }
     }
 
+    const chatBox = document.getElementById('chat-box');
+    db.ref('chats').limitToLast(50).on('child_added', (snapshot) => {
+      const data = snapshot.val();
+      const timeStr = new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'chat-msg';
+      msgDiv.innerHTML = `
+        <img class="chat-avatar" src="${data.avatar || 'https://api.dicebear.com/7.x/bottts/svg?seed=Default'}" alt="User">
+        <div class="msg-content">
+          <div class="name">${escapeHtml(data.name)} <span style="color:var(--text-muted); font-weight:normal;">${timeStr}</span></div>
+          <div class="text">${escapeHtml(data.text)}</div>
+        </div>
+      `;
+      chatBox.appendChild(msgDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    });
+
     function escapeHtml(text) {
-      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      if (!text) return '';
+      return text.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
 
-    // Keyboard Highlights
     window.addEventListener('keydown', (e) => {
       let key = e.key.toLowerCase();
       const keyEl = document.querySelector(`.key[data-key="${key}"]`);
